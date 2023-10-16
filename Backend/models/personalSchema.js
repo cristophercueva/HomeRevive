@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
-const userSchema = new mongoose.Schema(
+const personalSchema = new mongoose.Schema(
     {
-    nombre:{ 
+    name:{ 
         type:String,
         require: true
     },
-    apellidos:{
+    surname:{
         type:String,
         require: true
     },
@@ -14,11 +14,11 @@ const userSchema = new mongoose.Schema(
         type:String,
         require: true
     },
-    correo:{
+    email:{
         type:String,
         require: true
     },
-    celular:{
+    phone:{
         type:String,
         require: true
     },
@@ -30,13 +30,13 @@ const userSchema = new mongoose.Schema(
         type:String,
         require: true
     },
-    contraseña:{
+    password:{
         type:String,
         require: true
     }
     
 })
 
-const User = mongoose.model('User', userSchema)
+const personal = mongoose.model('personal', personalSchema)
 
-module.exports = User
+module.exports = personal

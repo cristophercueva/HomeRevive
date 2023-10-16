@@ -1,29 +1,25 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
-const User = require('./models/userSchema')
+const User = require('./models/personalSchema');
+const {connectDB} = require('./db.js');
 
 //connect to express app
-const app = express()
-//connect to MongoDB
-const dbURI = 'mongodb+srv://cristophercuevadeveloper:fOkWlBUFPSR81daq@homerevive.tplmdxb.mongodb.net/HomeRevive?retryWrites=true&w=majority'
-mongoose.connect(dbURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() =>{
-    app.listen(3001, () => {
-        console.log('Server is connected to port 3001 and connected to MongoDb')
-    })
+const app = express();
 
-})
-.catch((error) => {
-    console.log('Unable to connect to Server and/or MongoDb');
-})
+//connect to MongoDB
+connectDB();
 //middleware
-//schema
+app.use(bodyParser.json());
+app.use(cors());
+app.use(cookieParser());
 //routes
+const authRoutes = require("./routes/auth.routes");
+const personalRoutes = require("./routes/personal.routes");
+
+app.use("/api", authRoutes);
+app.use("/api", personalRoutes);
+
+module.exports = app;
