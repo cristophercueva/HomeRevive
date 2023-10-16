@@ -33,8 +33,11 @@ const personalSchema = new mongoose.Schema(
     password:{
         type:String,
         require: true
+    },
+    estado: {
+        type: String, // Puedes utilizar un tipo adecuado para el estado, como "String" o "Number" dependiendo de tus necesidades.
+        default: "Activo" // Puedes establecer un valor predeterminado si lo deseas.
     }
-    
 })
 
 const personal = mongoose.model('personal', personalSchema)

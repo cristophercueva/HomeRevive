@@ -16,10 +16,12 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(cookieParser());
 //routes
-const authRoutes = require("./routes/auth.routes");
-const personalRoutes = require("./routes/personal.routes");
+const authRoutes = require("./routes/auth.routes.js");
+const personalRoutes = require("./routes/personal.routes.js");
+const clienteRoutes = require("./routes/cliente.routes.js");
 
 app.use("/api", authRoutes);
 app.use("/api", personalRoutes);
+app.use("/api", clienteRoutes);
 
 module.exports = app;
