@@ -1,4 +1,4 @@
-const personal = require("../models/personalSchema.js");
+const trabajador = require("../models/trabajadorSchema.js");
 const bcrypt = require("bcrypt");
 const { createAccessToken } = require("../libs/jwt.js");
 const jwt = require("jsonwebtoken");
@@ -9,7 +9,7 @@ exports.login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const userFound = await personal.findOne({ username });
+        const userFound = await trabajador.findOne({ username });
 
         if (!userFound) return res.status(400).json({ message: "Personal not found" });
 
@@ -19,14 +19,17 @@ exports.login = async (req, res) => {
 
         const token = await createAccessToken({ id: userFound._id });
 
-        res.cookie('token', token);
+        res.cookie('token', token, {
+
+        });
         res.json({
             id: userFound._id,
-            username: userFound.username,
             email: userFound.email,
-            createdAt: userFound.createdAt,
-            updatedAt: userFound.updatedAt,
+            name: userFound.name,
+            surname: userFound.surname,
+            cargo: userFound.cargo,
         });
+        
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -44,14 +47,14 @@ exports.logout = async (req, res) => {
 
 
 exports.verifyToken = async (req, res) => {
-    const { token } = req.cookies;
+    const token = req.cookies.token;
 
     if (!token) return res.status(401).json({ message: "Unauthorized" });
 
     jwt.verify(token, TOKEN_SECRET, async (err, user) => {
         if (err) return res.status(401).json({ message: "Unauthorized" });
 
-        const userFound = await User.findById(user.id);
+        const userFound = await trabajador.findById(user.id);
 
         if (!userFound) return res.status(401).json({ message: "Unauthorized" });
 
@@ -59,6 +62,9 @@ exports.verifyToken = async (req, res) => {
             id: userFound._id,
             username: userFound.username,
             email: userFound.email,
+            name: userFound.name,
+            surname: userFound.surname,
+            cargo: userFound.cargo,
         });
     });
 };

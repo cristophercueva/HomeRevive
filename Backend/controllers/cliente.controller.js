@@ -1,6 +1,5 @@
 const Cliente = require("../models/clienteSchema.js");
 const bcrypt = require('bcrypt');
-const { createAccessToken } = require('../libs/jwt.js');
 const nodemailer = require('nodemailer');
 
 const enviarmail = async (email, nombre, surname, dni) => {
@@ -15,9 +14,9 @@ const enviarmail = async (email, nombre, surname, dni) => {
     const mensaje = {
         from: 'cristopher.cueva.developer@gmail.com',
         to: email,
-        subject: `HOME REVIVE TE SALUDA!  ${nombre} ${surname}`,
-        text: `Hola ${nombre}, espero te encuentres bien, Gracias por confiar en nosotros
-        nos pondremos en contacto contigo para informarte como va tu proceso de remodelacion`,
+        subject: `Bienvenido a la Familia Home Revive ${nombre} ${surname}`,
+        text: `Hola ${nombre}, espero te encuentres bien, Te enviamos tus credenciales para que puedas acceder a nuestra comunidad
+        teniendo como usuario ${dni} y como contraseña ${dni}, NO LO COMPARTAS CON NADIE`,
     }
 
     const transport = nodemailer.createTransport(config);
@@ -46,7 +45,7 @@ const createCliente = async (req, res) => {
         }
 
         // Hashea la contraseña antes de guardarla en la base de datos
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = await bcrypt.hash(dni, 10);
         const usernameHash = dni;
         // Crea un nuevo cliente con los datos proporcionados
         const newCliente = new Cliente({
@@ -63,8 +62,6 @@ const createCliente = async (req, res) => {
         // Guarda el nuevo cliente en la base de datos
         const clienteSaved = await newCliente.save();
         enviarmail(email, name, surname, dni)
-        const token = await createAccessToken({ id: personalsaved._id })
-        res.cookie('token', token);
         // Devuelve el cliente creado como respuesta
         res.json(clienteSaved);
     } catch (error) {

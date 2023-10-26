@@ -5,7 +5,16 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'roboto-mono': ['Roboto Mono', 'monospace'],
+        'open-sans': ['Open Sans', 'sans-serif'],
+      },
+      colors: {
+        marron: '#6B3737',
+        verde: "#37686B",
+      },
+    },
   },
   plugins: [],
 }

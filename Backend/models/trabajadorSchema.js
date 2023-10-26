@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const personalSchema = new mongoose.Schema(
+const trabajadorSchema = new mongoose.Schema(
     {
     name:{ 
         type:String,
@@ -38,8 +38,8 @@ const personalSchema = new mongoose.Schema(
         type: String, // Puedes utilizar un tipo adecuado para el estado, como "String" o "Number" dependiendo de tus necesidades.
         default: "Activo" // Puedes establecer un valor predeterminado si lo deseas.
     }
-})
+});
 
-const personal = mongoose.model('personal', personalSchema)
+const trabajador = mongoose.model('trabajador', trabajadorSchema);
 
-module.exports = personal
+module.exports = trabajador;
