@@ -29,8 +29,9 @@ const clienteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  customFields: {
-    type: mongoose.Schema.Types.Mixed
+  casaId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Casa',
   }
 });
 

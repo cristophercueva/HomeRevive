@@ -28,6 +28,7 @@ exports.login = async (req, res) => {
             name: userFound.name,
             surname: userFound.surname,
             cargo: userFound.cargo,
+            estado: userFound.estado,
         });
         
     } catch (error) {
@@ -65,6 +66,7 @@ exports.verifyToken = async (req, res) => {
             name: userFound.name,
             surname: userFound.surname,
             cargo: userFound.cargo,
+            estado: userFound.estado,
         });
     });
 };

@@ -1,17 +1,21 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faPowerOff, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from "../context/AuthContext";
+import { useTrabajadores } from "../context/TrabajadorContext";
 import React, { useState, useEffect, useRef } from 'react';
-import IconoHomeRevive from '../resources/IconoHomeRevive.png';
-import { useAuth } from "../context/AuthContext"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import IconoHomeRevive from '../resources/IconoHomeRevive.png';
 
 
-function ClientesPage() {
+function UsersPage() {
     const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef(null);
-    const [showCustomFields, setShowCustomFields] = useState(false);
 
+    const { getTrabajadores, trabajadores } = useTrabajadores();
+    useEffect(() => {
+        getTrabajadores()
+    }, [])
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
@@ -44,14 +48,14 @@ function ClientesPage() {
                 className={`md:hidden p-4 ${sidebarOpen ? 'hidden' : 'block'} bg-marron`}
                 onClick={toggleSidebar}
             >
-                ☰ {/* Puedes reemplazar esto con tu propio ícono de hamburguesa */}
+                ☰
             </button>
 
             {/* Panel de Navegación */}
             <div
                 ref={sidebarRef}
                 className={`bg-marron w-64 p-6 space-y-4 text-white 
-                   ${sidebarOpen ? 'block' : 'hidden'} md:block`}
+               ${sidebarOpen ? 'block' : 'hidden'} md:block`}
             >
                 <Link to={user && user.data.cargo === "Admin" ? "/adminpage" :
                     user && user.data.cargo === "Ingeniero" ? "/ingenieropage" :
@@ -74,7 +78,7 @@ function ClientesPage() {
             {/* Contenido Principal */}
             <div className="flex-1 flex flex-col ">
                 <div className="bg-gradient-to-b from-marron to-gray-300 p-4 shadow-md flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Clientes</h2>
+                    <h2 className="text-xl font-semibold">Personal</h2>
                     <div className="flex items-center space-x-4">
                         <button className="p-2 rounded hover:bg-gray-200">
                             <FontAwesomeIcon icon={faBell} />
@@ -88,13 +92,14 @@ function ClientesPage() {
                 <div className="p-6 flex-1 bg-gray-700 overflow-y-auto">
                     <div className="m-10">
                         <div className="mt-6 text-right mb-10">
-                            <button className="bg-blue-500 text-white px-4 py-1 rounded shadow hover:bg-blue-600 text-sm">Add user</button>
+                            <Link to={'/new-personal'}>
+                            <button className="bg-marron text-white px-4 py-1 rounded shadow hover:bg-marron_oscuro text-sm">Add user</button>
+                            </Link>
                         </div>
                         <div className="bg-gray-800 p-4 rounded-lg overflow-x-auto">
                             <table className="min-w-full text-sm">
                                 <thead>
                                     <tr>
-                                    <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm"></th>
                                         <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Name</th>
                                         <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Title</th>
                                         <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Status</th>
@@ -103,40 +108,39 @@ function ClientesPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="border-t border-gray-700 hover:bg-gray-800" >
-                                        <td className="py-4 px-6 sm:px-3"onClick={() => setShowCustomFields(!showCustomFields)}>
-                                            <button className="text-blue-500 hover:underline sm:text-sm">
-                                            <FontAwesomeIcon icon={faArrowRight} />
-                                            </button>
-                                        </td>
-                                        <td className="py-4 px-6 sm:px-3">
-                                            <div className="flex flex-col items-start">
-                                                <strong className="text-white mb-1 sm:text-sm">Andrew Alfred</strong>
-                                                <span className="text-sm text-gray-500">lindsay.walton@example.com</span>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-white sm:px-3 sm:text-sm">
-                                            Front-end Developer<br />
-                                            <span className="text-sm text-gray-500">Optimization</span>
-                                        </td>
-                                        <td className="py-4 px-6 sm:px-3">
-                                            <span className="text-green-400 sm:text-sm">Active</span>
-                                        </td>
-                                        <td className="py-4 px-6 text-white sm:px-3 sm:text-sm">
-                                            Member
-                                        </td>
-                                        <td className="py-4 px-6 sm:px-3">
-                                            <button className="text-blue-500 hover:underline sm:text-sm">Edit</button>
-                                        </td>
-                                    </tr>
-                                    {showCustomFields && (
-                                        <tr className="border-t border-gray-700 hover:bg-gray-800">
-                                            <td colSpan="5" className="py-2 px-6 sm:px-3 sm:text-sm">
-                                                <strong>Age:</strong> 40<br />
-                                                <strong>Pais:</strong> Peru
-                                            </td>
-                                        </tr>
-                                    )}
+                                    {trabajadores.map((trabajador, index) => {
+                                        const isLast = index === trabajador.length - 1;
+                                        const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+                                        return (
+
+                                            <tr key={trabajador._id} className="border-t border-gray-700 hover:bg-gray-800">
+                                                <td className="py-4 px-6 sm:px-3">
+                                                    <div className="flex flex-col items-start">
+                                                        <strong className="text-white mb-1 sm:text-sm">{trabajador.name} {trabajador.surname}</strong>
+                                                        <span className="text-sm text-gray-500">{trabajador.email}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-6 text-white sm:px-3 sm:text-sm">
+                                                    {trabajador.phone}
+                                                </td>
+                                                <td className="py-4 px-6 sm:px-3">
+                                                    <span className={trabajador.estado === 'Activo' ? 'text-green-400 sm:text-sm' : 'text-red-400 sm:text-sm'}>
+                                                        {trabajador.estado}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4 px-6 text-white sm:px-3 sm:text-sm">
+                                                    {trabajador.cargo}
+                                                </td>
+                                                <td className="py-4 px-6 sm:px-3">
+                                                    <Link to={`/personals/${trabajador._id}`}>
+                                                        <button className="text-blue-500 hover:underline sm:text-sm">Edit</button>
+                                                    </Link>
+                                                </td>
+                                            </tr>
+
+                                        );
+                                    })}
+
                                 </tbody>
                             </table>
                         </div>
@@ -149,4 +153,4 @@ function ClientesPage() {
     );
 }
 
-export default ClientesPage
+export default UsersPage

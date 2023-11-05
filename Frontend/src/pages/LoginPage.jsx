@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import homeReviveIllustration from '../resources/4153051.jpg';
 
+
 // ...
 
 
@@ -18,15 +19,17 @@ function LoginPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuthenticated) 
-            if (user && user.data.cargo === "Admin") {
-                navigate("/adminpage");
-            } else if (user && user.data.cargo === "Ingeniero") {
-                navigate("/ingenieropage");
-            } else {
-                navigate("/homepage");
+        if (isAuthenticated) {
+            if (user && user.data.estado === "Activo") {
+                if (user.data.cargo === "Admin") {
+                    navigate("/adminpage");
+                } else if (user.data.cargo === "Ingeniero") {
+                    navigate("/ingenieropage");
+                } else {
+                    navigate("/homepage");
+                }
             }
-        
+        }        
     }, [isAuthenticated, user, navigate]);
     
 

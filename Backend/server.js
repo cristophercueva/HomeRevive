@@ -27,11 +27,12 @@ app.use((err, req, res, next) => {
 const authRoutes = require("./routes/auth.routes.js");
 const clienteRoutes = require("./routes/cliente.routes.js");
 const trabajadorRoutes = require("./routes/trabajador.route.js");
+const casaRoutes = require("./routes/casa.route.js");
 
 app.use("/api", authRoutes);
 app.use("/api", clienteRoutes);
 app.use("/api", trabajadorRoutes);
-
+app.use("/api", casaRoutes);
 
 
 

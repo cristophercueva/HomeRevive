@@ -3,9 +3,10 @@ import { faBell, faPowerOff, faBars } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect, useRef } from 'react';
 import IconoHomeRevive from "../resources/IconoHomeRevive.png";
 import { useAuth } from "../context/AuthContext";
+import { Link } from 'react-router-dom';
 
 function IngenieroPage() {
-  const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
+    const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef(null);
 
@@ -50,7 +51,11 @@ function IngenieroPage() {
                 className={`bg-marron w-64 p-6 space-y-4 text-white 
                    ${sidebarOpen ? 'block' : 'hidden'} md:block`}
             >
-                <a href="/homepage"><img src={IconoHomeRevive} alt="Icono Home Revive" className="w-28 h-auto mx-10 my-2" /></a>
+                <Link to={user && user.data.cargo === "Admin" ? "/adminpage" :
+                    user && user.data.cargo === "Ingeniero" ? "/ingenieropage" :
+                        "/homepage"}>
+                    <img src={IconoHomeRevive} alt="Icono Home Revive" className="w-28 h-auto mx-10 my-2" />
+                </Link>
                 <h2 className="text-center">{fullName}</h2>
                 <div className="space-y-2 pt-10">
                     <p className='text-black'>CLIENTE</p>
@@ -59,15 +64,15 @@ function IngenieroPage() {
                 </div>
                 <div className="space-y-2 pt-10">
                     <p className='text-black'>USUARIO</p>
-                    <a href="/new-user" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Nuevo Usuario</a>
-                    <a href="/users" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Usuarios</a>
+                    <a href="/new-personal" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Nuevo Usuario</a>
+                    <a href="/personals" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Usuarios</a>
                 </div>
             </div>
 
             {/* Contenido Principal */}
             <div className="flex-1 flex flex-col ">
-            <div className="bg-gradient-to-b from-marron to-gray-300 p-4 shadow-md flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Ingeniero Page</h2>
+                <div className="bg-gradient-to-b from-marron to-gray-300 p-4 shadow-md flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">Ingeniero Page</h2>
                     <div className="flex items-center space-x-4">
                         <button className="p-2 rounded hover:bg-gray-200">
                             <FontAwesomeIcon icon={faBell} />

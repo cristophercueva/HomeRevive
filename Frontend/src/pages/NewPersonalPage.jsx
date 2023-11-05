@@ -1,65 +1,64 @@
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form'
-import { useClientes } from '../context/ClienteContext';
+import { useTrabajadores } from '../context/TrabajadorContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { faBell, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import IconoHomeRevive from '../resources/IconoHomeRevive.png';
 
-function NewClientPage() {
+function NewPersonalPage() {
 
-    const contextValue = useClientes();
+    const contextValue = useTrabajadores();
     console.log(contextValue);                   //Ver lo que trae usetrabajores
     const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef(null);
     const { register, handleSubmit,setValue, formState: { errors } } = useForm();
-    const { createCliente } = useClientes();
-    const { updateCliente, getCliente, errors: ClienteErrors } = useClientes();
+    const { createTrabajador } = useTrabajadores();
+    const { updateTrabajador, getTrabajador, errors: TrabajadorErrors } = useTrabajadores();
     const navigate = useNavigate();
     const params = useParams();
 
-
     useEffect(() => {
-        async function loadCliente() {
+        async function loadTrabajador() {
             if (params.id) {
                 try {
-                    const cliente = await getCliente(params.id);
+                    const personal = await getTrabajador(params.id);
 
-                    setValue('name', cliente.name);
-                    setValue('surname', cliente.surname);
-                    setValue('dni', cliente.dni)
-                    setValue('email', cliente.email);
-                    setValue('phone', cliente.phone);
+                    setValue('name', personal.name);
+                    setValue('surname', personal.surname);
+                    setValue('dni', personal.dni)
+                    setValue('email', personal.email);
+                    setValue('phone', personal.phone);
+                    setValue('cargo', personal.cargo);
+                    setValue('estado', personal.estado);
                 } catch (error) {
                     console.error(error);
                 }
             }
         }
-        loadCliente();
+        loadTrabajador();
     }, []);
 
     const onSubmit = handleSubmit(async (data) => {
         const dataValid = {
             ...data,
         };
-    
+
         try {
             if (params.id) {
-                await updateCliente(params.id, dataValid);
-                navigate('/clientes');
+                await updateTrabajador(params.id, dataValid);
             } else {
-                const newCliente = await createCliente(dataValid);
-                navigate(`/new-house?clienteId=${newCliente.id}`);
+                await createTrabajador(dataValid);
             }
+            navigate('/personals');
         } catch (error) {
             console.error("Error al procesar el formulario:", error);
             // Aquí puedes mostrar un mensaje de error al usuario si lo deseas.
         }
         
     });
-    
 
 
     const toggleSidebar = () => {
@@ -85,7 +84,6 @@ function NewClientPage() {
         user && user.data
             ? `${user.data.name} ${user.data.surname}`
             : "Usuario desconocido";
-
     return (
         <div className="flex h-screen w-full bg-gray-100">
 
@@ -118,7 +116,7 @@ function NewClientPage() {
             {/* Contenido Principal */}
             <div className="flex-1 flex flex-col ">
                 <div className="bg-gradient-to-b from-marron to-gray-300 p-4 shadow-md flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Nuevo Cliente</h2>
+                    <h2 className="text-xl font-semibold">Nuevo Personal</h2>
                     <div className="flex items-center space-x-4">
                         <button className="p-2 rounded hover:bg-gray-200">
                             <FontAwesomeIcon icon={faBell} />
@@ -129,7 +127,7 @@ function NewClientPage() {
                     </div>
                 </div>
                 {
-                    ClienteErrors && ClienteErrors.map((error, i) => (
+                    TrabajadorErrors && TrabajadorErrors.map((error, i) => (
                         <div className='bg-red-500 p-2 text-white text-center my-2' key={i}>
                             {error}
                         </div>
@@ -233,10 +231,54 @@ function NewClientPage() {
                                     )
                                 }
                             </div>
-                            
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cargo">Cargo</label>
+                                <select className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="cargo" name="cargo"
+                                    {...register("cargo", {
+                                        required: true,
+                                        validate: value => value !== "Escoge un Cargo"
+                                    })}
+                                    defaultValue="Escoge un Cargo" // Establecer el valor predeterminado
+                                >
+
+                                    <option disabled>Escoge un Cargo</option>
+                                    <option>Admin</option>
+                                    <option>Ingeniero</option>
+                                    <option>Arquitecto</option>
+                                    {/* Agrega más opciones si es necesario */}
+                                </select>
+                                {errors.cargo && errors.cargo.type === "required" && (
+                                    <p className="text-red-500">Cargo es requerido</p>
+                                )}
+                                {errors.cargo && errors.cargo.type === "validate" && (
+                                    <p className="text-red-500">Por favor, selecciona un cargo válido</p>
+                                )}
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="estado">Cargo</label>
+                                <select className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="estado" name="estado"
+                                    {...register("estado", {
+                                        required: true,
+                                        validate: value => value !== "Escoge un estado"
+                                    })}
+                                    defaultValue="Escoge un estado" // Establecer el valor predeterminado
+                                >
+
+                                    <option disabled>Escoge un estado</option>
+                                    <option>Activo</option>
+                                    <option>Inactivo</option>
+                                    {/* Agrega más opciones si es necesario */}
+                                </select>
+                                {errors.estado && errors.estado.type === "required" && (
+                                    <p className="text-red-500">Estado es requerido</p>
+                                )}
+                                {errors.estado && errors.estado.type === "validate" && (
+                                    <p className="text-red-500">Por favor, selecciona un estado válido</p>
+                                )}
+                            </div>
                             <div className="flex items-center justify-between">
                                 <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                                    Continuar
+                                    Enviar
                                 </button>
                             </div>
                         </form>
@@ -247,4 +289,4 @@ function NewClientPage() {
     );
 }
 
-export default NewClientPage
+export default NewPersonalPage

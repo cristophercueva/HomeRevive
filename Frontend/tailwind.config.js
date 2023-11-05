@@ -12,6 +12,7 @@ export default {
       },
       colors: {
         marron: '#6B3737',
+        marron_oscuro: '#452828',
         verde: "#37686B",
       },
     },

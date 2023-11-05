@@ -64,9 +64,11 @@ export const AuthProvider = ({ children }) => {
                 return setUser(null);
             }
             try {
-                const res = await verifyTokenRequest(tokenFromCookie);  // Aquí pasas el token
+                const res = await verifyTokenRequest(tokenFromCookie); // Aquí pasas el token
+                
                 setIsAuthenticated(true);
                 setUser(res);
+                console.log("Respuesta del servidor:", res);
                 setLoading(false);
             } catch (error) {
                 setIsAuthenticated(false);

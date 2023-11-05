@@ -3,6 +3,7 @@ import { faBell, faPowerOff, faBars } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect, useRef } from 'react';
 import IconoHomeRevive from "../resources/IconoHomeRevive.png";
 import { useAuth } from "../context/AuthContext";
+import { Link } from 'react-router-dom';
 
 function HomePage() {
     const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
@@ -50,7 +51,11 @@ function HomePage() {
                 className={`bg-marron w-64 p-6 space-y-4 text-white 
                    ${sidebarOpen ? 'block' : 'hidden'} md:block`}
             >
-                <a href="/homepage"><img src={IconoHomeRevive} alt="Icono Home Revive" className="w-28 h-auto mx-10 my-2" /></a>
+                <Link to={user && user.data.cargo === "Admin" ? "/adminpage" :
+                    user && user.data.cargo === "Ingeniero" ? "/ingenieropage" :
+                        "/homepage"}>
+                    <img src={IconoHomeRevive} alt="Icono Home Revive" className="w-28 h-auto mx-10 my-2" />
+                </Link>
                 <h2 className="text-center">{fullName}</h2>
                 <div className="space-y-2 pt-10">
                     <p className='text-black'>CLIENTE</p>
@@ -58,9 +63,9 @@ function HomePage() {
                     <a href="/client" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Clientes</a>
                 </div>
                 <div className="space-y-2 pt-10">
-                    <p className='text-black'>USUARIO</p>
-                    <a href="/new-user" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Nuevo Usuario</a>
-                    <a href="/users" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Usuarios</a>
+                    <p className='text-black'>Personal</p>
+                    <a href="/new-personal" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Nuevo Personal</a>
+                    <a href="/personals" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" >Personal</a>
                 </div>
             </div>
 
