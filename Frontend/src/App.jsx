@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './ProtectedRoute';
 import { TrabajadorProvider } from './context/TrabajadorContext';
 import { ClienteProvider } from './context/ClienteContext';
+import { CasaProvider } from './context/CasaContext';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import ClientesPage from './pages/ClientPage';
@@ -11,12 +12,16 @@ import NewPersonalPage from './pages/NewPersonalPage';
 import PersonalPage from './pages/PersonalsPage';
 import AdminPage from './pages/AdminPage';
 import IngenieroPage from './pages/IngenieroPage';
+import NewCasaPage from './pages/NewCasaPage';
 
 function App() {
   return (
     <AuthProvider>
       <TrabajadorProvider>
       <ClienteProvider>
+        <CasaProvider>
+
+        
       <BrowserRouter>
       <div className="flex flex-col min-h-screen m-0 p-0">
         <main className="flex-1 m-0 w-full p-0">
@@ -36,6 +41,10 @@ function App() {
               <Route path="/personals" element={<PersonalPage />} />
               <Route path="/client" element={<ClientesPage />} />
               <Route path="/new-client" element={<NewClientPage />} />
+              <Route path="/client/:id" element={<NewClientPage />} />
+              <Route path="/new-house" element={<NewCasaPage/>} />
+              <Route path="/new-house/:id" element={<NewCasaPage/>} />
+
             </Route>
 
             {/* Rutas protegidas para Ingeniero */}
@@ -47,6 +56,7 @@ function App() {
         </main>
       </div>
     </BrowserRouter>
+    </CasaProvider>
     </ClienteProvider>
       </TrabajadorProvider>
     </AuthProvider>

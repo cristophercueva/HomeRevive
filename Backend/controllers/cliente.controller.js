@@ -1,105 +1,66 @@
 const Cliente = require("../models/clienteSchema.js");
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
 
-const enviarmail = async (email, nombre, surname, dni) => {
-    const config = {
-        host: 'smtp.gmail.com',
-        port: 587,
-        auth: {
-            user: 'cristopher.cueva.developer@gmail.com',
-            pass: "xfxg vmap asuo ykco",
-        }
-    }
-    const mensaje = {
-        from: 'cristopher.cueva.developer@gmail.com',
-        to: email,
-        subject: `Bienvenido a la Familia Home Revive ${nombre} ${surname}`,
-        text: `Hola ${nombre}, espero te encuentres bien, Te enviamos tus credenciales para que puedas acceder a nuestra comunidad
-        teniendo como usuario ${dni} y como contraseña ${dni}, NO LO COMPARTAS CON NADIE`,
-    }
-
-    const transport = nodemailer.createTransport(config);
-
-    const info = await transport.sendMail(mensaje);
-}
-
-const getClientes = async (req, res) => {
+const getClientes = async (req, res, next) => {
     try {
         const clientes = await Cliente.find();
         res.json(clientes);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
-const createCliente = async (req, res) => {
-    const { name, surname, dni, email, phone, username, password, customFields } = req.body;
+const createCliente = async (req, res, next) => {
+    const { name, surname, dni, email, phone, casaId } = req.body;
 
     try {
-        // Verifica si ya existe un cliente con el mismo DNI
         const clienteFound = await Cliente.findOne({ dni });
-
         if (clienteFound) {
             return res.status(400).json({ message: "El cliente ya existe" });
         }
 
-        // Hashea la contraseña antes de guardarla en la base de datos
-        const passwordHash = await bcrypt.hash(dni, 10);
-        const usernameHash = dni;
-        // Crea un nuevo cliente con los datos proporcionados
-        const newCliente = new Cliente({
-            name,
-            surname,
-            dni,
-            email,
-            phone,
-            username: usernameHash,
-            password: passwordHash,
-            customFields, // Campos mixtos
-        });
-
-        // Guarda el nuevo cliente en la base de datos
+        const newCliente = new Cliente({ name, surname, dni, email, phone, casaId });
         const clienteSaved = await newCliente.save();
-        enviarmail(email, name, surname, dni)
-        // Devuelve el cliente creado como respuesta
         res.json(clienteSaved);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
-const getCliente = async (req, res) => {
+
+const getCliente = async (req, res, next) => {
     try {
         const cliente = await Cliente.findById(req.params.id);
-        if (!cliente) return res.status(404).json({ message: "Personal not found" });
-        return res.json(cliente);
+        if (!cliente) return res.status(404).json({ message: "Cliente no encontrado" });
+        res.json(cliente);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
-}
-const updateCliente = async (req, res) => {
+};
+
+const updateCliente = async (req, res, next) => {
+    const { id } = req.params;
     const { name, surname, email, phone, customFields } = req.body;
-    const clienteId = req.params.id; // ID del cliente a actualizar
 
-try {
-    // Actualiza los campos del cliente con los nuevos valores y devuelve el cliente actualizado
-    const clienteUpdated = await Cliente.findByIdAndUpdate(clienteId, {
-        name,
-        surname,
-        email,
-        phone,
-        customFields
-    }, { new: true });
-
-    if (!clienteUpdated) {
-        return res.status(404).json({ message: "Cliente no encontrado" });
+    try {
+        const clienteUpdated = await Cliente.findByIdAndUpdate(id, { name, surname, email, phone, customFields }, { new: true });
+        if (!clienteUpdated) return res.status(404).json({ message: "Cliente no encontrado" });
+        res.json(clienteUpdated);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
+};
 
-    // Devuelve el cliente actualizado como respuesta
-    res.json(clienteUpdated);
-} catch (error) {
-    return res.status(500).json({ message: error.message });
-}
-}
+const getLastCliente = async (req, res, next) => {
+    try {
+        const cliente = await Cliente.findOne().sort({ createdAt: -1 });
+        if (!cliente) return res.status(404).json({ message: "No hay clientes en la base de datos" });
+        res.json(cliente);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-module.exports = {enviarmail, getClientes, createCliente, getCliente, updateCliente};
+// Middleware de manejo de errores
+
+
+module.exports = { getClientes, createCliente, getCliente, updateCliente, getLastCliente };

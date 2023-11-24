@@ -1,76 +1,90 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {
-    getClientesRequest
-    , getClienteRequest
-    , createClienteRequest
-    , updateClienteRequest
-}
-    from '../api/cliente.js';
-const ClienteContext = createContext();
+    getClientesRequest,
+    getClienteRequest,
+    createClienteRequest,
+    updateClienteRequest,
+    getLastClientRequest
+} from '../api/cliente.js';
+
+
+export const ClienteContext = createContext();
 
 export const useClientes = () => {
     const context = useContext(ClienteContext);
-
     if (!context) {
-        throw new Error("use Trabajadores must be used within a TrabajadorProvider");
+        throw new Error("useClientes must be used within a ClienteProvider");
     }
-
     return context;
 };
+
 export function ClienteProvider({ children }) {
     const [clientes, setClientes] = useState([]);
     const [errors, setErrors] = useState([]);
+
+    const handleErrorResponse = (error) => {
+        console.log("Veo el error",error.response);
+        const errorMessages = error.response && error.response.data
+            ? Array.isArray(error.response.data) ? error.response.data : [error.response.data.message]
+            : ['Ha ocurrido un error inesperado'];
+        setErrors(errorMessages);
+    }
 
     const getClientes = async () => {
         try {
             const res = await getClientesRequest();
             setClientes(res.data);
         } catch (error) {
-            console.error(error);
+            handleErrorResponse(error);
+        }
+    };
+
+    const getLastCliente = async () => {
+        try {
+            const res = await getLastClientRequest();
+            setClientes(prevClientes => [...prevClientes, res.data]);
+        } catch (error) {
+            handleErrorResponse(error);
         }
     };
 
     const createCliente = async (cliente) => {
         try {
             const res = await createClienteRequest(cliente);
-            const newClienteList = [...clientes, res.data];
-            setClientes(newClienteList);
+            setClientes(prevClientes => [...prevClientes, res.data]);
+            return res.data; // resuelve la promesa con los datos
         } catch (error) {
-            setErrors(error.response.data);
+            handleErrorResponse(error);
+            return Promise.reject(error); // rechaza la promesa con el error
         }
     };
+    
 
-    const getCliente= async (id) => {
+    const getCliente = async (id) => {
         try {
             const res = await getClienteRequest(id);
             return res.data;
         } catch (error) {
-            console.error(error);
+            handleErrorResponse(error);
         }
     };
 
     const updateCliente = async (id, cliente) => {
         try {
             const res = await updateClienteRequest(id, cliente);
-            const updatedClienteList = [...clientes];
-            const index = updatedClienteList.findIndex(worker => worker._id === id);
-            if (index !== -1) {
-                updatedClienteList[index] = res.data;
-                setClientes(updatedClienteList);
-            }
+            setClientes(prevClientes => prevClientes.map(item => (item._id === id ? res.data : item)));
         } catch (error) {
-            setErrors(error.response.data);
+            handleErrorResponse(error);
         }
     };
 
     useEffect(() => {
         if (errors.length > 0) {
-            const timer = setTimeout(() => {
-                setErrors([]);
-            }, 3000);
+            const timer = setTimeout(() => setErrors([]), 3000);
             return () => clearTimeout(timer);
         }
     }, [errors]);
+
 
     return (
         <ClienteContext.Provider
@@ -80,7 +94,9 @@ export function ClienteProvider({ children }) {
                 updateCliente,
                 getCliente,
                 getClientes,
+                getLastCliente,
                 errors,
+                setErrors,
             }}
         >
             {children}

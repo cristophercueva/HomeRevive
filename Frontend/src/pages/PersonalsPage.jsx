@@ -93,17 +93,17 @@ function UsersPage() {
                     <div className="m-10">
                         <div className="mt-6 text-right mb-10">
                             <Link to={'/new-personal'}>
-                            <button className="bg-marron text-white px-4 py-1 rounded shadow hover:bg-marron_oscuro text-sm">Add user</button>
+                            <button className="bg-marron text-white px-4 py-1 rounded shadow hover:bg-marron_oscuro text-sm">Agregar Usuario</button>
                             </Link>
                         </div>
                         <div className="bg-gray-800 p-4 rounded-lg overflow-x-auto">
                             <table className="min-w-full text-sm">
                                 <thead>
                                     <tr>
-                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Name</th>
-                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Title</th>
-                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Status</th>
-                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Role</th>
+                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Nombre</th>
+                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Celular</th>
+                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Estado</th>
+                                        <th className="text-left py-4 px-6 text-gray-400 sm:px-3 sm:text-sm">Rol</th>
                                         <th className="text-gray-400 sm:px-3"></th>
                                     </tr>
                                 </thead>

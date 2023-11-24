@@ -8,16 +8,16 @@ import { faBell, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import IconoHomeRevive from '../resources/IconoHomeRevive.png';
 
 function NewClientPage() {
-
-    const contextValue = useClientes();
-    console.log(contextValue);                   //Ver lo que trae usetrabajores
+    
     const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef(null);
+    
     const { register, handleSubmit,setValue, formState: { errors } } = useForm();
-    const { createCliente } = useClientes();
-    const { updateCliente, getCliente, errors: ClienteErrors } = useClientes();
+    const [clienteErrors, setClienteErrors] = useState([]);
+    const {createCliente,updateCliente, getCliente } = useClientes();
     const navigate = useNavigate();
+
     const params = useParams();
 
 
@@ -39,26 +39,28 @@ function NewClientPage() {
         }
         loadCliente();
     }, []);
+    
 
     const onSubmit = handleSubmit(async (data) => {
         const dataValid = {
             ...data,
         };
-    
         try {
             if (params.id) {
                 await updateCliente(params.id, dataValid);
-                navigate('/clientes');
+                navigate('/client');
             } else {
-                const newCliente = await createCliente(dataValid);
-                navigate(`/new-house?clienteId=${newCliente.id}`);
+                await createCliente(dataValid);
+                navigate('/new-house');
             }
         } catch (error) {
-            console.error("Error al procesar el formulario:", error);
-            // Aquí puedes mostrar un mensaje de error al usuario si lo deseas.
+            // Captura y muestra el error
+            console.error("Error al procesar el formulario:", error.response.data.message);
+            setClienteErrors(prevErrors => [...prevErrors, error.response.data.message || "Error al procesar la solicitud"]);
         }
-        
     });
+    
+    
     
 
 
@@ -129,7 +131,7 @@ function NewClientPage() {
                     </div>
                 </div>
                 {
-                    ClienteErrors && ClienteErrors.map((error, i) => (
+                    clienteErrors.length > 0 && clienteErrors.map((error, i) => (
                         <div className='bg-red-500 p-2 text-white text-center my-2' key={i}>
                             {error}
                         </div>

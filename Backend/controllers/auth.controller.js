@@ -13,6 +13,11 @@ exports.login = async (req, res) => {
 
         if (!userFound) return res.status(400).json({ message: "Personal not found" });
 
+        // Verificar si el estado del usuario es 'Activo'
+        if (userFound.estado !== 'Activo') {
+            return res.status(400).json({ message: "Account is not active" });
+        }
+
         const isMatch = await bcrypt.compare(password, userFound.password);
 
         if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
@@ -20,7 +25,7 @@ exports.login = async (req, res) => {
         const token = await createAccessToken({ id: userFound._id });
 
         res.cookie('token', token, {
-
+            // Configuraciones adicionales para la cookie, si las hay
         });
         res.json({
             id: userFound._id,
@@ -35,6 +40,7 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 

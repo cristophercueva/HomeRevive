@@ -3,7 +3,7 @@ const Casa = require('../models/casaSchema.js'); // Assuming the model file is n
 // GET all Casas
 const getCasas = async (req, res) => {
     try {
-        const casas = await Casa.find().populate('trabajadorId clienteId');
+        const casas = await Casa.find();
         res.json(casas);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -13,13 +13,20 @@ const getCasas = async (req, res) => {
 // GET a single Casa by id
 const getCasa = async (req, res) => {
     try {
-        const casa = await Casa.findById(req.params.id).populate('trabajadorId clienteId');
+        // Suponiendo que tienes clienteId disponible en tu solicitud
+        const clienteId = req.params.id; 
+
+        // Cambia esta línea para buscar por clienteId
+        const casa = await Casa.findById(clienteId)
+
         if (!casa) return res.status(404).json({ message: "Casa not found" });
+
         res.json(casa);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // CREATE a new Casa
 const createCasa = async (req, res) => {
@@ -46,7 +53,7 @@ const createCasa = async (req, res) => {
 
 // UPDATE a Casa
 const updateCasa = async (req, res) => {
-    const { direccion, referencia, visita, estado, camposcasa, camposrenovacioncasa } = req.body;
+    const { direccion, referencia, visita, estado, camposcasa, camposrenovacioncasa,trabajadorId } = req.body;
     const casaId = req.params.id;
 
     try {
@@ -56,7 +63,8 @@ const updateCasa = async (req, res) => {
             visita,
             estado,
             camposcasa,
-            camposrenovacioncasa
+            camposrenovacioncasa,
+            trabajadorId,
         }, { new: true });
 
         if (!updatedCasa) {

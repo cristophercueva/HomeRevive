@@ -4,9 +4,9 @@ import {
     getTrabajadorRequest,
     createTrabajadorRequest,
     updateTrabajadorRequest
-} from '../api/trabajador';
+} from '../api/trabajador.js';
 
-const TrabajadorContext = createContext();
+export const TrabajadorContext = createContext();
 
 export const useTrabajadores = () => {
     const context = useContext(TrabajadorContext);
@@ -22,22 +22,31 @@ export function TrabajadorProvider({ children }) {
     const [trabajadores, setTrabajadores] = useState([]);
     const [errors, setErrors] = useState([]);
 
+    const handleErrorResponse = (error) => {
+        console.log("Veo el error",error.response);
+        const errorMessages = error.response && error.response.data
+            ? Array.isArray(error.response.data) ? error.response.data : [error.response.data.message]
+            : ['Ha ocurrido un error inesperado'];
+        setErrors(errorMessages);
+    }
+
     const getTrabajadores = async () => {
         try {
             const res = await getTrabajadoresRequest();
             setTrabajadores(res.data);
         } catch (error) {
-            console.error(error);
+            handleErrorResponse(error);
         }
     };
 
     const createTrabajador = async (trabajador) => {
         try {
             const res = await createTrabajadorRequest(trabajador);
-            const newTrabajadorList = [...trabajadores, res.data];
-            setTrabajadores(newTrabajadorList);
+            setTrabajadores(prevTrabajadores => [...prevTrabajadores, res.data]);
+            return res.data;
         } catch (error) {
-            setErrors(error.response.data);
+            handleErrorResponse(error);
+            return Promise.reject(error);
         }
     };
 
@@ -46,7 +55,7 @@ export function TrabajadorProvider({ children }) {
             const res = await getTrabajadorRequest(id);
             return res.data;
         } catch (error) {
-            console.error(error);
+            handleErrorResponse(error);
         }
     };
 
@@ -60,7 +69,7 @@ export function TrabajadorProvider({ children }) {
                 setTrabajadores(updatedTrabajadorList);
             }
         } catch (error) {
-            setErrors(error.response.data);
+            handleErrorResponse(error);
         }
     };
 

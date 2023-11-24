@@ -1,14 +1,48 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faPowerOff, faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell, faPowerOff, faArrowRight, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import React, { useState, useEffect, useRef } from 'react';
-import IconoHomeRevive from "../resources/IconoHomeRevive.png";
+import IconoHomeRevive from '../resources/IconoHomeRevive.png';
 import { useAuth } from "../context/AuthContext";
+import { useClientes } from "../context/ClienteContext";
+import { useCasas } from "../context/CasaContext";
+import { useTrabajadores } from "../context/TrabajadorContext";
 import { Link } from 'react-router-dom';
 
 function HomePage() {
     const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef(null);
+    const [customFieldsToShow, setCustomFieldsToShow] = useState({});
+    const [iconState, setIconState] = useState({});
+    const { getTrabajadores, trabajadores } = useTrabajadores();
+    const { getClientes, clientes } = useClientes();
+    const { getCasas, casas } = useCasas();
+
+
+
+    useEffect(() => {
+        getClientes()
+    }, [])
+
+    useEffect(() => {
+        getCasas()
+    }, [])
+
+    useEffect(() => {
+        getTrabajadores()
+    }, [])
+
+    const toggleCustomFields = (id) => {
+        setCustomFieldsToShow(prevState => ({
+            ...prevState,
+            [id]: !prevState[id]
+        }));
+        setIconState(prevState => ({
+            ...prevState,
+            [id]: !prevState[id]
+        }));
+    };
+
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -29,11 +63,31 @@ function HomePage() {
         return <div>Cargando...</div>;
     }
 
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value.toLowerCase());
+    };
+
+    const filteredClientes = searchTerm
+        ? clientes.filter(cliente =>
+            cliente.name.toLowerCase().includes(searchTerm) ||
+            cliente.surname.toLowerCase().includes(searchTerm) ||
+            cliente.dni.toLowerCase().includes(searchTerm)
+        )
+        : clientes;
+
+
     const fullName =
         user && user.data
             ? `${user.data.name} ${user.data.surname}`
             : "Usuario desconocido";
 
+
+    function formatDate(dateString) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('es-ES', options).replace(/\//g, '-');
+    }
     return (
         <div className="flex h-screen w-full bg-gray-100 ">
 
@@ -71,8 +125,8 @@ function HomePage() {
 
             {/* Contenido Principal */}
             <div className="flex-1 flex flex-col ">
-            <div className="bg-gradient-to-b from-marron to-gray-300 p-4 shadow-md flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Admin Page</h2>
+                <div className="bg-gradient-to-b from-marron to-gray-300 p-4 shadow-md flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">Clientes</h2>
                     <div className="flex items-center space-x-4">
                         <button className="p-2 rounded hover:bg-gray-200">
                             <FontAwesomeIcon icon={faBell} />
@@ -82,9 +136,78 @@ function HomePage() {
                         </button>
                     </div>
                 </div>
-                <div className="p-6 flex-1">
-                    {/* Aquí puedes agregar el contenido principal */}
+
+                <div className="p-6 flex-1 bg-gray-700 overflow-y-auto">
+                    <div className="m-10 ">
+                        <div className="flex justify-between items-center mb-10">
+                            {/* Input de búsqueda */}
+                            <input
+                                type="text"
+                                placeholder="Buscar por Nombre o DNI"
+                                value={searchTerm}
+                                onChange={handleSearchChange}
+                                className="px-4 py-2 rounded w-full max-w-md"
+                            />
+
+                        </div>
+                        <div className="bg-gray-800 p-4 rounded-lg overflow-x-auto">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {filteredClientes.map((cliente) => {
+                                    const clienteId = cliente._id;
+                                    const filteredHouses = casas.filter(casa => casa.clienteId === clienteId);
+
+                                    return (
+                                        <div key={cliente._id} className="bg-gray-800 hover:bg-gray-700 text-white rounded-lg p-4 shadow-lg transition duration-300 ease-in-out">
+                                            <div className="flex justify-between items-center">
+                                                <div>
+                                                    <p className='text-blue-400'>DATOS CLIENTE</p>
+                                                    <p className="text-gray-400">{cliente.name} {cliente.surname}</p>
+                                                    <p className="text-gray-400">{cliente.email}</p>
+                                                    <p className='text-gray-400'>{cliente.phone}</p>
+                                                </div>
+                                            </div>
+                                            {filteredHouses.map((casa) => {
+                                                // La declaración se mueve aquí, antes del bloque JSX de retorno.
+                                                const casaId = casa.trabajadorId;
+                                                const filteredTrabajadores = trabajadores.filter(trabajador => trabajador._id === casaId);
+                                                return (
+                                                    <div key={casa._id} className="flex justify-between items-center mt-2">
+                                                        <div>
+                                                            <p className='text-blue-400'>DATOS CASA</p>
+                                                            <p className="text-gray-400">{casa.estado}</p>
+                                                            <p className="text-gray-400">{formatDate(casa.visita)}</p>
+                                                            <p className='text-gray-400'>{cliente.phone}</p>
+                                                            {/* Aquí puedes usar filteredTrabajadores como necesites. */}
+                                                            {filteredTrabajadores.map((trabajador) => {
+                                                            // La declaración se mueve aquí, antes del bloque JSX de r
+                                                            return (
+                                                                <div key={casa._id} className="flex justify-between items-center mt-2">
+                                                                    <div>
+                                                                        <p className='text-blue-400'>DATOS TRABAJADOR</p>
+                                                                        <p className="text-gray-400">{trabajador.name}</p>
+                                                                        <p className="text-gray-400">{trabajador.phone}</p>
+                                                                        <p className='text-gray-400'>{trabajador.email}</p>
+                                                                        {/* Aquí puedes usar filteredTrabajadores como necesites. */}
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                        </div>
+                                                        
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+
+
             </div>
         </div>
     );

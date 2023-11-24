@@ -20,7 +20,6 @@ function LoginPage() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            if (user && user.data.estado === "Activo") {
                 if (user.data.cargo === "Admin") {
                     navigate("/adminpage");
                 } else if (user.data.cargo === "Ingeniero") {
@@ -28,7 +27,7 @@ function LoginPage() {
                 } else {
                     navigate("/homepage");
                 }
-            }
+            
         }        
     }, [isAuthenticated, user, navigate]);
     

@@ -9,11 +9,11 @@ const casaSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    visita:{
+    visita: {
         type: Date,
         require: true
     },
-    estado:{
+    estado: {
         type: String,
         required: true
     },
@@ -33,6 +33,9 @@ const casaSchema = new mongoose.Schema({
         ref: 'Cliente',
         required: true
     }
+}, {
+    // esta es la opción para agregar campos de timestamps
+    timestamps: true
 });
 
 const casa = mongoose.model('casa', casaSchema);

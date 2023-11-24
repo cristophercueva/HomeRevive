@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const clienteSchema = new mongoose.Schema({
+  // tus campos de esquema
   name: {
     type: String,
     required: true
@@ -21,18 +22,13 @@ const clienteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  username: {
-    type: String,
-    required: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
   casaId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Casa',
   }
+}, {
+  // esta es la opción para agregar campos de timestamps
+  timestamps: true
 });
 
 const cliente = mongoose.model('cliente', clienteSchema);

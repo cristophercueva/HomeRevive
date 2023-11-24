@@ -7,7 +7,7 @@ import {
     deleteCasaRequest,
 } from '../api/casa.js'; // Make sure the path to your API file is correct
 
-const CasaContext = createContext();
+export const CasaContext = createContext();
 
 export const useCasas = () => {
     const context = useContext(CasaContext);
@@ -23,21 +23,31 @@ export function CasaProvider({ children }) {
     const [casas, setCasas] = useState([]);
     const [errors, setErrors] = useState([]);
 
+    const handleErrorResponse = (error) => {
+        console.log("Veo el error",error.response);
+        const errorMessages = error.response && error.response.data
+            ? Array.isArray(error.response.data) ? error.response.data : [error.response.data.message]
+            : ['Ha ocurrido un error inesperado'];
+        setErrors(errorMessages);
+    }
+
     const getCasas = async () => {
         try {
             const res = await getCasasRequest();
             setCasas(res.data);
         } catch (error) {
-            console.error(error);
+            handleErrorResponse(error);
         }
     };
 
     const createCasa = async (casa) => {
         try {
             const res = await createCasaRequest(casa);
-            setCasas([...casas, res.data]);
+            setCasas(prevCasas => [...prevCasas, res.data]);
+            return res.data;
         } catch (error) {
-            setErrors(error.response.data);
+            handleErrorResponse(error);
+            return Promise.reject(error);
         }
     };
 
@@ -46,17 +56,16 @@ export function CasaProvider({ children }) {
             const res = await getCasaRequest(id);
             return res.data;
         } catch (error) {
-            console.error(error);
+            handleErrorResponse(error);
         }
     };
 
     const updateCasa = async (id, casa) => {
         try {
             const res = await updateCasaRequest(id, casa);
-            const updatedCasas = casas.map(c => c._id === id ? res.data : c);
-            setCasas(updatedCasas);
+            setCasas(prevCasas => prevCasas.map(item => (item._id === id ? res.data : item)));
         } catch (error) {
-            setErrors(error.response.data);
+            handleErrorResponse(error);
         }
     };
 
@@ -65,15 +74,13 @@ export function CasaProvider({ children }) {
             await deleteCasaRequest(id);
             setCasas(casas.filter(casa => casa._id !== id));
         } catch (error) {
-            setErrors(error.response.data);
+            handleErrorResponse(error);
         }
     };
 
     useEffect(() => {
         if (errors.length > 0) {
-            const timer = setTimeout(() => {
-                setErrors([]);
-            }, 3000);
+            const timer = setTimeout(() => setErrors([]), 3000);
             return () => clearTimeout(timer);
         }
     }, [errors]);

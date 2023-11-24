@@ -9,14 +9,13 @@ import IconoHomeRevive from '../resources/IconoHomeRevive.png';
 
 function NewPersonalPage() {
 
-    const contextValue = useTrabajadores();
-    console.log(contextValue);                   //Ver lo que trae usetrabajores
     const { logout, user, loading } = useAuth(); // Asegúrate de desestructurar 'loading' aquí
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef(null);
-    const { register, handleSubmit,setValue, formState: { errors } } = useForm();
-    const { createTrabajador } = useTrabajadores();
-    const { updateTrabajador, getTrabajador, errors: TrabajadorErrors } = useTrabajadores();
+
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const [trabajadorErrors, setTrabajadorErrors] = useState([]);
+    const { createTrabajador, updateTrabajador, getTrabajador } = useTrabajadores();
     const navigate = useNavigate();
     const params = useParams();
 
@@ -34,7 +33,7 @@ function NewPersonalPage() {
                     setValue('cargo', personal.cargo);
                     setValue('estado', personal.estado);
                 } catch (error) {
-                    console.error(error);
+                    setTrabajadorErrors(prevErrors => [...prevErrors, error.response.data.message || "Error al procesar la solicitud"]);
                 }
             }
         }
@@ -54,10 +53,11 @@ function NewPersonalPage() {
             }
             navigate('/personals');
         } catch (error) {
-            console.error("Error al procesar el formulario:", error);
-            // Aquí puedes mostrar un mensaje de error al usuario si lo deseas.
+            // Captura y muestra el error
+            console.error("Error al procesar el formulario:", error.response.data.message);
+            setTrabajadorErrors(prevErrors => [...prevErrors, error.response.data.message || "Error al procesar la solicitud"]);
         }
-        
+
     });
 
 
@@ -127,7 +127,7 @@ function NewPersonalPage() {
                     </div>
                 </div>
                 {
-                    TrabajadorErrors && TrabajadorErrors.map((error, i) => (
+                    trabajadorErrors.length > 0&& trabajadorErrors.map((error, i) => (
                         <div className='bg-red-500 p-2 text-white text-center my-2' key={i}>
                             {error}
                         </div>

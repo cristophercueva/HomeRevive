@@ -68,7 +68,6 @@ export const AuthProvider = ({ children }) => {
                 
                 setIsAuthenticated(true);
                 setUser(res);
-                console.log("Respuesta del servidor:", res);
                 setLoading(false);
             } catch (error) {
                 setIsAuthenticated(false);
