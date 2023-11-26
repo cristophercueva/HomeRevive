@@ -176,7 +176,7 @@ function CasaArquitectoPage() {
             id: uuidv4(),
             nombre: '', // Este será el nombre del campo, como 'tamaño'
             valor: ''   // Este será el valor del campo, como '120m2'
-            
+
         };
 
         setCamposRemodelacion([...camposRemodelacion, nuevaRemo]);
@@ -188,7 +188,7 @@ function CasaArquitectoPage() {
 
 
     return (
-        <div className="flex h-screen w-full bg-gray-100">
+        <div className="flex min-h-screen w-full bg-gray-100">
 
             {/* Botón Hamburguesa */}
             <button className={`md:hidden p-4 ${sidebarOpen ? 'hidden' : 'block'} bg-marron`} onClick={toggleSidebar}>
@@ -196,8 +196,8 @@ function CasaArquitectoPage() {
             </button>
 
             {/* Panel de Navegación */}
-            <div ref={sidebarRef} className={`bg-marron w-64 p-6 space-y-4 text-white h-screen ${sidebarOpen ? 'block' : 'hidden'} md:block`}>
-
+            <div ref={sidebarRef} className={`bg-marron w-64 p-6 space-y-4 text-white min-h-screen ${sidebarOpen ? 'block' : 'hidden'} md:block`}>
+  
                 <Link to={user && user.data.cargo === "Admin" ? "/adminpage" :
                     user && user.data.cargo === "Ingeniero" ? "/ingenieropage" :
                         "/homepage"}>
@@ -227,9 +227,9 @@ function CasaArquitectoPage() {
                         </div>
                     ))
                 }
-                <div className="bg-gray-800 p-4 h-screen w-full">
+                <div className="bg-gray-800 p-4 min-h-screen w-full"> {/* Usa min-h-screen en lugar de h-full */}
                     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl mx-auto">
-                        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+                        <form className="w-full " onSubmit={handleSubmit(onSubmit)}>
                             <div className="flex flex-wrap -mx-2">
                                 <div className="w-full sm:w-1/3 px-2 mb-4">
                                     <label htmlFor="direccion" className="block text-gray-700 text-sm font-bold mb-2">Direccion</label>
@@ -289,50 +289,35 @@ function CasaArquitectoPage() {
                                     </select>
                                     {errors.estado && <p className="text-red-500">{errors.estado.message}</p>}
                                 </div>
-                                
+
                             </div>
 
-                            <div className="mt-4 p-8 bg-white rounded-lg shadow-md w-full">
+                            <div className="mt-4 p-8 bg-white rounded-lg shadow-md w-full"> {/* Contenedor para Campos Casa */}
                                 <label htmlFor="camposcasa" className="block text-gray-700 text-sm font-bold mb-2">Campos Casa</label>
                                 {campos.map((campo, index) => (
-
-                                    <div key={campo.id} className="mb-4">
-
+                                    <div key={campo.id} className="mb-4 grid grid-cols-2 gap-4">
                                         <input
                                             type="text"
                                             value={campo.nombre}
                                             placeholder="Nombre del campo"
                                             disabled
-                                            onChange={(e) => {
-                                                const nuevosCampos = [...campos];
-                                                nuevosCampos[index].nombre = e.target.value;
-                                                setCampos(nuevosCampos);
-                                            }}
-                                            className="mb-2 p-2 border rounded"
+                                            className="p-2 border rounded bg-gray-100" // bg-gray-100 to indicate the field is disabled
                                         />
-                                        <input
-                                            type="text"
+                                        <textarea
                                             value={campo.valor}
                                             placeholder="Valor del campo"
                                             disabled
-                                            onChange={(e) => {
-                                                const nuevosCampos = [...campos];
-                                                nuevosCampos[index].valor = e.target.value;
-                                                setCampos(nuevosCampos);
-                                            }}
-                                            className="mb-2 p-2 border rounded "
+                                            rows={3} // Adjust the number of rows based on average content length
+                                            className="p-2 border rounded bg-gray-100 resize-none" // resize-none to prevent resizing
                                         />
-
                                     </div>
                                 ))}
-
-
                             </div>
 
-                            <div className="mt-4 p-8 bg-white rounded-lg shadow-md w-full">
-                            <label htmlFor="camporemo" className="block text-gray-700 text-sm font-bold mb-6">Campos Remodelacion</label>
+                            <div className="mt-4 p-8 bg-white rounded-lg shadow-md w-full"> {/* Contenedor para Campos Remodelación */}
+                                <label htmlFor="camposcasa" className="block text-gray-700 text-sm font-bold mb-2">Campos Remodelacion</label>
                                 {camposRemodelacion.map((camporemo, index) => (
-                                    <div key={camporemo.id} className="mb-4">
+                                    <div key={camporemo.id} className="mb-4 grid grid-cols-2 gap-4">
                                         <input
                                             type="text"
                                             value={camporemo.nombre}
@@ -342,9 +327,10 @@ function CasaArquitectoPage() {
                                                 nuevosCampos[index].nombre = e.target.value;
                                                 setCamposRemodelacion(nuevosCampos);
                                             }}
-                                            className="mb-2 p-2 border rounded"
+                                            className="p-2 border rounded bg-gray-100 w-full"
+
                                         />
-                                        <input
+                                        <textarea
                                             type="text"
                                             value={camporemo.valor}
                                             placeholder="Valor del campo"
@@ -353,7 +339,7 @@ function CasaArquitectoPage() {
                                                 nuevosCampos[index].valor = e.target.value;
                                                 setCamposRemodelacion(nuevosCampos);
                                             }}
-                                            className="mb-2 p-2 border rounded "
+                                            className="p-2 border rounded bg-gray-100 resize-none w-full"
                                         />
                                         <button onClick={() => eliminarCampoRemodelacion(camporemo.id)} className="px-4 py-2 bg-red-500 text-white rounded">
                                             Eliminar
@@ -365,7 +351,8 @@ function CasaArquitectoPage() {
                                 </button>
                             </div>
 
-                            <div className="flex items-center justify-between mt-6 ">
+
+                            <div className="flex items-center justify-between mt-6">
                                 <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                                     Guardar
                                 </button>

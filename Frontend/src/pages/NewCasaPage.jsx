@@ -34,7 +34,7 @@ function NewCasaPage() {
         // Si getLastCliente es sincrónico, puedes agregar el console.log aquí
         // console.log(clientes);
     }, []);
-    
+
     // Si getLastCliente es asíncrono y actualiza el estado 'clientes',
     // puedes usar otro useEffect para detectar cambios en ese estado.
     useEffect(() => {
@@ -42,8 +42,8 @@ function NewCasaPage() {
             setIdCliente(clientes[0]._id);
         }
     }, [clientes]); // Este useEffect se dispara cada vez que 'clientes' cambia
-     // Este useEffect se dispara cada vez que 'clientes' cambia
-    
+    // Este useEffect se dispara cada vez que 'clientes' cambia
+
 
     useEffect(() => {
 
@@ -67,9 +67,10 @@ function NewCasaPage() {
     }, []); // dependency on params.id means this will re-run when params.id changes
 
     const onSubmit = async (data) => {
+        
         const dataValid = {
             ...data,
-            visita: data.visita ? dayjs.utc(data.visita).format() : dayjs.utc().format,
+            visita: data.visita ? dayjs.utc(data.visita).toISOString() : dayjs.utc().toISOString(),
             clienteId: idCliente,
         };
         try {
@@ -110,6 +111,16 @@ function NewCasaPage() {
             : "Usuario desconocido";
 
     const todayDate = new Date().toISOString().split("T")[0];
+
+    // Función de validación para la fecha
+    const validateDate = (value) => {
+        const now = new Date(new Date().toISOString().split('T')[0]);
+        const selectedDate = new Date(value);
+        
+        
+      
+        return selectedDate > now || "La fecha no puede ser hoy ni una fecha pasada";
+      };
     return (
         <div className="flex h-screen w-full bg-gray-100">
 
@@ -184,13 +195,15 @@ function NewCasaPage() {
                                 {errors.referencia && <p className="text-red-500">{errors.referencia.message}</p>}
                             </div>
                             <div className="sm:col-span-3">
-                                <label htmlFor="visita" className="block text-gray-700 text-sm font-bold mb-2">Fecha de Visita</label>
+                                <label htmlFor="visita" className="block text-gray-700 text-sm font-bold mb-2">
+                                    Fecha de Visita
+                                </label>
                                 <div className="mt-2">
                                     <input
                                         type='date'
                                         {...register("visita", {
                                             required: "El campo Fecha de Visita es requerido",
-                                            validate: value => new Date(value) >= new Date(todayDate) || "La fecha no puede ser hoy ni una fecha pasada"
+                                            validate: validateDate
                                         })}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                         autoFocus

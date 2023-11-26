@@ -146,7 +146,7 @@ function IngenieroPage() {
 
                                 {casas.map((casa) => {
 
-                                    console.log("Casa ID:", casa._id);
+                                    
                                     
                                     const clienteId = casa.clienteId;
                                     const clientito = clientes.filter(cliente => cliente._id === clienteId);
@@ -166,7 +166,7 @@ function IngenieroPage() {
                                                     // Solo renderizar información del trabajador si casa.trabajadorId es igual a user._id
                                                     const uniqueKey = `${casa._id}-${cliente._id}`;
 
-                                                    console.log("Cliente Unique Key:", uniqueKey);
+                                                    
                                                     return (
                                                         <div key={uniqueKey} className="flex justify-between items-center mt-2">
                                                             <div>

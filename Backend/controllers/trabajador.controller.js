@@ -8,7 +8,7 @@ const enviarmail = async (email, nombre, surname, dni) => {
         port: 587,
         auth: {
             user: 'cristopher.cueva.developer@gmail.com',
-            pass: "xfxg vmap asuo ykco",
+            pass: 'etyk qgfg xbmw ieec', // Replace with your generated App Password
         }
     }
     const mensaje = {
@@ -34,7 +34,7 @@ const getTrabajadores = async (req, res) => {
 };
 
 const createTrabajador = async (req, res) => {
-    const { name, surname, dni, email, phone,cargo, estado } = req.body;
+    const { name, surname, dni, email, phone, cargo, estado } = req.body;
 
     try {
         const trabajadorFound = await Trabajador.findOne({ dni });
@@ -100,4 +100,4 @@ const updateTrabajador = async (req, res) => {
     }
 }
 
-module.exports = {enviarmail, getTrabajadores, createTrabajador, getTrabajador, updateTrabajador};
+module.exports = { enviarmail, getTrabajadores, createTrabajador, getTrabajador, updateTrabajador };

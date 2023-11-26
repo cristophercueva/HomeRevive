@@ -84,10 +84,12 @@ function HomePage() {
             : "Usuario desconocido";
 
 
-    function formatDate(dateString) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        return new Date(dateString).toLocaleDateString('es-ES', options).replace(/\//g, '-');
-    }
+            function formatDate(dateString) {
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+                const date = new Date(dateString);
+                return date.toLocaleDateString('es-ES', options).replace(/\//g, '-');
+            }
+            
     return (
         <div className="flex h-screen w-full bg-gray-100 ">
 

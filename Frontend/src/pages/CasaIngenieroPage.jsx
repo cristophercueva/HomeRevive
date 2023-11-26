@@ -156,7 +156,7 @@ function CasaIngenieroPage() {
     // Por ejemplo, podrías hacer una solicitud POST con `camposObjeto` como el cuerpo
    
     return (
-        <div className="flex h-screen w-full bg-gray-100">
+        <div className="flex min-h-screen w-full bg-gray-100">
 
             {/* Botón Hamburguesa */}
             <button className={`md:hidden p-4 ${sidebarOpen ? 'hidden' : 'block'} bg-marron`} onClick={toggleSidebar}>
@@ -164,7 +164,7 @@ function CasaIngenieroPage() {
             </button>
 
             {/* Panel de Navegación */}
-            <div ref={sidebarRef} className={`bg-marron w-64 p-6 space-y-4 text-white h-screen ${sidebarOpen ? 'block' : 'hidden'} md:block`}>
+            <div ref={sidebarRef} className={`bg-marron w-64 p-6 space-y-4 text-white min-h-screen ${sidebarOpen ? 'block' : 'hidden'} md:block`}>
 
                 <Link to={user && user.data.cargo === "Admin" ? "/adminpage" :
                     user && user.data.cargo === "Ingeniero" ? "/ingenieropage" :
@@ -195,7 +195,7 @@ function CasaIngenieroPage() {
                         </div>
                     ))
                 }
-                <div className="bg-gray-800 p-4 h-screen w-full">
+                <div className="bg-gray-800 p-4 min-h-screen w-full">
                     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl mx-auto">
                         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
                             <div className="flex flex-wrap -mx-2">
@@ -282,7 +282,7 @@ function CasaIngenieroPage() {
                             <div className="mt-4 p-8 bg-white rounded-lg shadow-md w-full">
                             <label htmlFor="campocasa" className="block text-gray-700 text-sm font-bold mb-2">Campos casa</label>
                                 {campos.map((campo, index) => (
-                                    <div key={campo.id} className="mb-4">
+                                    <div key={campo.id} className="mb-4 grid grid-cols-2 gap-4">
                                         <input
                                             type="text"
                                             value={campo.nombre}
@@ -292,9 +292,9 @@ function CasaIngenieroPage() {
                                                 nuevosCampos[index].nombre = e.target.value;
                                                 setCampos(nuevosCampos);
                                             }}
-                                            className="mb-2 p-2 border rounded"
+                                            className="p-2 border rounded bg-gray-100" // bg-gray-100 to indicate the field is disabled
                                         />
-                                        <input
+                                        <textarea
                                             type="text"
                                             value={campo.valor}
                                             placeholder="Valor del campo"
@@ -303,7 +303,7 @@ function CasaIngenieroPage() {
                                                 nuevosCampos[index].valor = e.target.value;
                                                 setCampos(nuevosCampos);
                                             }}
-                                            className="mb-2 p-2 border rounded "
+                                            className="p-2 border rounded bg-gray-100 resize-none" // resize-none to prevent resizing
                                         />
                                         <button onClick={() => eliminarCampo(campo.id)} className="px-4 py-2 bg-red-500 text-white rounded">
                                             Eliminar
