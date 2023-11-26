@@ -13,7 +13,8 @@ import PersonalPage from './pages/PersonalsPage';
 import AdminPage from './pages/AdminPage';
 import IngenieroPage from './pages/IngenieroPage';
 import NewCasaPage from './pages/NewCasaPage';
-
+import CasaIngenieroPage from './pages/CasaIngenieroPage';
+import CasaArquitectoPage from './pages/CasaArquitectoPage';
 function App() {
   return (
     <AuthProvider>
@@ -31,6 +32,7 @@ function App() {
             {/* Rutas protegidas sin roles específicos */}
             <Route element={<ProtectedRoute />}>
               <Route path="/homepage" element={<HomePage />} />
+              <Route path="/casa-arquitecto/:id" element={<CasaArquitectoPage/>}/>
             </Route>
 
             {/* Rutas protegidas para Admin */}
@@ -50,6 +52,7 @@ function App() {
             {/* Rutas protegidas para Ingeniero */}
             <Route element={<ProtectedRoute roles={["Ingeniero"]} />}>
               <Route path="/ingenieropage" element={<IngenieroPage />} />
+              <Route path="/casa-ingeniero/:id" element={<CasaIngenieroPage/>}/>
             </Route>
 
           </Routes>

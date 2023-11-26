@@ -80,6 +80,7 @@ function LoginPage() {
                             type="password"
                             id="password"
                             placeholder="Contraseña"
+                            autoComplete="password"
                             className="w-full px-2 py-1 border-b-2 focus:outline-none focus:border-green-500"
                             {...register("password", { required: true })}
                         />

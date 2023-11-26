@@ -30,7 +30,7 @@ const getCasa = async (req, res) => {
 
 // CREATE a new Casa
 const createCasa = async (req, res) => {
-    const { direccion, referencia, visita, estado, trabajadorId, camposcasa, camposrenovacioncasa, clienteId } = req.body;
+    const { direccion, referencia, visita, estado, trabajadorId,trabajador2Id, camposcasa, camposrenovacioncasa, clienteId } = req.body;
 
     try {
         const newCasa = new Casa({
@@ -39,6 +39,7 @@ const createCasa = async (req, res) => {
             visita,
             estado,
             trabajadorId,
+            trabajador2Id,
             camposcasa,
             camposrenovacioncasa,
             clienteId
@@ -53,7 +54,7 @@ const createCasa = async (req, res) => {
 
 // UPDATE a Casa
 const updateCasa = async (req, res) => {
-    const { direccion, referencia, visita, estado, camposcasa, camposrenovacioncasa,trabajadorId } = req.body;
+    const { direccion, referencia, visita, estado, camposcasa, camposrenovacioncasa,trabajadorId,trabajador2Id } = req.body;
     const casaId = req.params.id;
 
     try {
@@ -65,6 +66,7 @@ const updateCasa = async (req, res) => {
             camposcasa,
             camposrenovacioncasa,
             trabajadorId,
+            trabajador2Id,
         }, { new: true });
 
         if (!updatedCasa) {

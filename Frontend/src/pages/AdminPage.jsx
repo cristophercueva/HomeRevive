@@ -126,7 +126,7 @@ function HomePage() {
             {/* Contenido Principal */}
             <div className="flex-1 flex flex-col ">
                 <div className="bg-gradient-to-b from-marron to-gray-300 p-4 shadow-md flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Clientes</h2>
+                    <h2 className="text-xl font-semibold">Casas</h2>
                     <div className="flex items-center space-x-4">
                         <button className="p-2 rounded hover:bg-gray-200">
                             <FontAwesomeIcon icon={faBell} />

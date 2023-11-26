@@ -19,8 +19,12 @@ const casaSchema = new mongoose.Schema({
     },
     trabajadorId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cliente',
+        ref: 'Personal',
         required: true
+    },
+    trabajador2Id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Personal',
     },
     camposcasa: {
         type: mongoose.Schema.Types.Mixed
